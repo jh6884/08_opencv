@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
-import os, glob, time
+import os, glob, time, json
 
 startT = time.time()
-categories =  []
+categories =  ['triangle', 'circle']
 dictionary_size = 50
-base_path = "../img/daylight/"
+base_path = "../img/road_sign/"
 dict_file = './roadsign_dict.npy'
 svm_model_file = './roadsing_svm.xml'
+json_path = "../img/data_json/"
 
 detector = cv2.xfeatures2d.SIFT_create()
 matcher = cv2.BFMatcher(cv2.NORM_L2)
@@ -24,8 +25,17 @@ for idx, category in enumerate(categories): # 카테고리 순회
     for i, img_path in enumerate(img_paths): # 카테고리 내의 모든 이미지 파일 순회
         paths.append(img_path)        
         labels.append(idx)            # 학습 데이타 레이블, 0 또는 1 
-        img = cv2.imread(img_path)          
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.imread(img_path)
+
+        filename = os.path.basename(img_path)
+        json_file = json_path + filename[:9] +'.json'
+        with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for item in data["annotation"]:
+                     if item["box"]:
+                          bbox = item["box"]
+        cropped_img = img[bbox[1]:bbox[3],bbox[0]:bbox[2]]
+        gray = cv2.cvtColor(cropped_img, cv2.COLOR_BGR2GRAY)
         # 특징점과 특징 디스크립터 추출 및 bowTrainer에 추가 ---④
         kpt, desc= detector.detectAndCompute(gray, None) 
         bowTrainer.add(desc)                
