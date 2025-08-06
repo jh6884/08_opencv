@@ -9,7 +9,7 @@ svm_model_file = './plane_bike_svm.xml'
 
 # 테스트 할 이미지 경로 --- ①
 imgs = ['../img/aircraft.jpg','../img/jetstar.jpg', 
-        '../img/motorcycle.jpg', '../img/motorbike.jpg']
+        '../img/motorcycle.jpg', '../img/motorbike.jpg', '../img/motorcycle2.jpg', '../img/standard-motorcycle.png']
 
 # 특징 추출기(SIFT) 생성 ---②
 detector = cv2.xfeatures2d.SIFT_create()
