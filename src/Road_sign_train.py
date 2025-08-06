@@ -7,7 +7,7 @@ categories =  ['triangle', 'circle']
 dictionary_size = 50
 base_path = "../img/road_sign/"
 dict_file = './roadsign_dict.npy'
-svm_model_file = './roadsing_svm.xml'
+svm_model_file = './roadsign_svm.xml'
 json_path = "../img/data_json/"
 
 detector = cv2.xfeatures2d.SIFT_create()
@@ -34,11 +34,13 @@ for idx, category in enumerate(categories): # 카테고리 순회
                 for item in data["annotation"]:
                      if item["box"]:
                           bbox = item["box"]
+                          print(bbox)
+                          break
         cropped_img = img[bbox[1]:bbox[3],bbox[0]:bbox[2]]
         gray = cv2.cvtColor(cropped_img, cv2.COLOR_BGR2GRAY)
         # 특징점과 특징 디스크립터 추출 및 bowTrainer에 추가 ---④
         kpt, desc= detector.detectAndCompute(gray, None) 
-        bowTrainer.add(desc)                
+        bowTrainer.add(desc)
         print('\t%s %d/%d(%.2f%%)' \
               %(category,i+1, img_len, (i+1)/img_len*100), end='\r')
     print()
