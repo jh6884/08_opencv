@@ -5,7 +5,7 @@ import os, glob, time
 startT = time.time()
 categories =  []
 dictionary_size = 50
-base_path = "../img/roadSign/"
+base_path = "../img/daylight/"
 dict_file = './roadsign_dict.npy'
 svm_model_file = './roadsing_svm.xml'
 
