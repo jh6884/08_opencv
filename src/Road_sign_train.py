@@ -36,8 +36,8 @@ for idx, category in enumerate(categories): # 카테고리 순회
                      if item["box"]:
                           x1, y1, x2, y2 = item["box"]
                           break
-        cropped_img = img[y1:y2, x1:x2]
-        gray = cv2.cvtColor(cropped_img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        cropped_img = gray[y1:y2, x1:x2]
         # 특징점과 특징 디스크립터 추출 및 bowTrainer에 추가 ---④
         kpt, desc= detector.detectAndCompute(gray, None) 
         try:
