@@ -9,6 +9,7 @@ base_path = "../img/road_sign/"
 dict_file = './roadsign_dict.npy'
 svm_model_file = './roadsign_svm.xml'
 json_path = "../img/data_json/"
+error_count = 0
 
 detector = cv2.xfeatures2d.SIFT_create()
 matcher = cv2.BFMatcher(cv2.NORM_L2)
@@ -33,14 +34,18 @@ for idx, category in enumerate(categories): # 카테고리 순회
                 data = json.load(f)
                 for item in data["annotation"]:
                      if item["box"]:
-                          bbox = item["box"]
-                          print(bbox)
+                          x1, y1, x2, y2 = item["box"]
                           break
-        cropped_img = img[bbox[1]:bbox[3],bbox[0]:bbox[2]]
+        cropped_img = img[y1:y2, x1:x2]
         gray = cv2.cvtColor(cropped_img, cv2.COLOR_BGR2GRAY)
         # 특징점과 특징 디스크립터 추출 및 bowTrainer에 추가 ---④
         kpt, desc= detector.detectAndCompute(gray, None) 
-        bowTrainer.add(desc)
+        try:
+            bowTrainer.add(desc)
+        except: 
+            error_count += 1
+            print(f'{filename}이 정상적으로 학습되지 않음, 오류 {error_count}건')
+            print(f'오류 발생 이미지 bbox size: {x2-x1}, {y2-y1}')
         print('\t%s %d/%d(%.2f%%)' \
               %(category,i+1, img_len, (i+1)/img_len*100), end='\r')
     print()
