@@ -11,7 +11,7 @@ svm_model_file = './roadsign_svm.xml'
 json_path = "../img/data_json/"
 error_count = 0
 
-detector = cv2.xfeatures2d.SIFT_create()
+detector = cv2.SIFT_create()
 matcher = cv2.BFMatcher(cv2.NORM_L2)
 bowTrainer = cv2.BOWKMeansTrainer(dictionary_size)
 bowExtractor = cv2.BOWImgDescriptorExtractor(detector, matcher)
@@ -38,8 +38,9 @@ for idx, category in enumerate(categories): # 카테고리 순회
                           break
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         cropped_img = gray[y1:y2, x1:x2]
+        enlarged_img = cv2.resize(cropped_img, ((x2-x1)*5, (y2-y1)*5), cv2.INTER_CUBIC)
         # 특징점과 특징 디스크립터 추출 및 bowTrainer에 추가 ---④
-        kpt, desc= detector.detectAndCompute(gray, None) 
+        kpt, desc= detector.detectAndCompute(enlarged_img, None) 
         try:
             bowTrainer.add(desc)
         except: 
